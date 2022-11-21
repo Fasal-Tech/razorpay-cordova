@@ -1,5 +1,7 @@
 #import "Main.h"
 
+typedef RazorpayCheckout Razorpay;
+
 @interface Main () <RazorpayPaymentCompletionProtocolWithData, ExternalWalletSelectionProtocol> {
   Razorpay *razorpay;
 }
@@ -21,7 +23,11 @@
   [razorpay setExternalWalletSelectionDelegate:self];
 
   self.callbackId = [command callbackId];
-  [razorpay open:options];
+  NSMutableDictionary * tempOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
+  tempOptions[@"integration_version"] = CDV_VERSION;
+  tempOptions[@"integration"] = @"cordova";
+  tempOptions[@"FRAMEWORK"] = @"cordova";
+  [razorpay open:tempOptions];[razorpay open:options];
 }
 
 - (void)onPaymentError:(int)code
@@ -44,8 +50,7 @@
   [self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
 }
 
-- (void)onExternalWalletSelected:(nonnull NSString *)walletName
-                 WithPaymentData:(nullable NSDictionary *)paymentData {
+- (void)onExternalWalletSelected:(NSString * _Nonnull)walletName withPaymentData:(NSDictionary * _Nullable)paymentData {
   CDVPluginResult *result = [CDVPluginResult
          resultWithStatus:CDVCommandStatus_ERROR
       messageAsDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
