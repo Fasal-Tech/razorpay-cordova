@@ -1,7 +1,5 @@
 #import "Main.h"
 
-typedef RazorpayCheckout Razorpay;
-
 @interface Main () <RazorpayPaymentCompletionProtocolWithData, ExternalWalletSelectionProtocol> {
   Razorpay *razorpay;
 }
